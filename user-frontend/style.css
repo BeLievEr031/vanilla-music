@@ -1,27 +1,3 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-}
-
-*::after,
-*::before {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  height: 100vh;
-  width: 100vw;
-}
-
 .container {
   background-image: url("./public/hero-img.jpg");
   background-size: cover;
@@ -41,16 +17,6 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-}
-
-.box {
-  position: absolute;
-  z-index: 99;
-  color: white;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .box h1 {
