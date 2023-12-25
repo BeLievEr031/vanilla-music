@@ -4,8 +4,9 @@
   box-sizing: border-box;
   /* font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif; */
-    /* font-family: Dancing Script; */
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* font-family: Dancing Script; */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 *::after,
@@ -125,22 +126,22 @@ ul {
   width: 100%;
 }
 
-aside ul li a span  {
- display: inline-block;
- }
+aside ul li a span {
+  display: inline-block;
+}
 
- aside ul li a{
+aside ul li a {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   padding-left: 10%;
   gap: 8px;
- }
+}
 
- .link-text{
+.link-text {
   font-size: 25px;
- }
+}
 
 ul li {
   display: flex;
@@ -169,4 +170,55 @@ ul li span {
 
 .bottom-side-item {
   margin-top: auto;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  width: 100%;
+}
+
+.greeting-text {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.action-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-icons > * {
+  cursor: pointer;
+}
+
+.profile {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.profile img {
+  width: 100%;
+  height: 100%;
+}
+
+
+.view-all {
+  outline: none;
+  border: none;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background-color: rgba(78, 75, 75, 0.4);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
 }
