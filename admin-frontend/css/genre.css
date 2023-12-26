@@ -1,0 +1,37 @@
+.genre-section {
+  display: flex;
+  gap: 20px;
+  padding: 20px 10px;
+}
+
+.artist-box {
+  width: 70%;
+  background-color: lightblue;
+  height: 100%;
+  padding: 5px 15px;
+}
+
+.artist-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 20px;
+  border: 2px solid black;
+  border-radius: 5px;
+  margin-top:12px ;
+}
+
+.a-name{
+    font-weight: 600;
+    text-transform: capitalize;
+
+}
+
+.a-action-btn div{
+    cursor: pointer;
+}
+
+.create-artist-box {
+  width: 25%;
+  height: 100%;
+  background-color: lightgreen;
+}
