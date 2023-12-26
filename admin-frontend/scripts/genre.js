@@ -50,11 +50,9 @@ const handleGenreRowHTMLCreate = async (genre) => {
 
         return genreRow;
     } catch (error) {
-        // console.log(error.message); // Failure
         createBtn.innerHTML = "Create Genre"
         toast(false, "Already exists")
         if (error.type = "document_already_exists") {
-            console.log(45);
         }
     }
 
