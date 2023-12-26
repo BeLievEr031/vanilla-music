@@ -45,16 +45,31 @@
         </div>
 
         <div class="create-genre-box">
-          <input type="text" class="input-default" id="genre-input" placeholder="Enter Genre" />
-          <button>Create Genre</button>
+          <input
+            type="text"
+            class="input-default"
+            id="genre-input"
+            placeholder="Enter Genre"
+          />
+          <button id="create-btn">
+            Create Genre
+          </button>
           <div class="suggestion-genre">
             <h1>Some Suggestions</h1>
-            <div class="s-g-box-cont">
-            </div>
+            <div class="s-g-box-cont"></div>
           </div>
         </div>
       </section>
     </div>
-    <script src="./scripts/genre.js"></script>
+
+    <div class="hot-toast">
+      <div class="strip-color"></div>
+      <div class="message">Success</div>
+      <div class="close">
+        <span class="material-symbols-outlined"> close </span>
+      </div>
+    </div>
+    <script type="module" src="./utils/toast.js"></script>
+    <script type="module" src="./scripts/genre.js"></script>
   </body>
 </html>

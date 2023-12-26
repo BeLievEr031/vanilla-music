@@ -1,0 +1,5 @@
+const PROJECT_ID = "658a5f3544cda48afc75"
+const DATABASE_ID = "658a5fbcd28191080bdb"
+const COLLECTION_ID = "658a5fdee5f438d6a51a"
+
+export { PROJECT_ID, DATABASE_ID, COLLECTION_ID };

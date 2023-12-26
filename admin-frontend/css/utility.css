@@ -20,7 +20,7 @@ html {
 body {
   height: 100vh;
   width: 100vw;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 .container {
@@ -93,3 +93,57 @@ section {
   display: flex;
   gap: 10px;
 }
+
+.hot-toast{
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  min-width: 20vw;
+  height: 50px;
+  background-color: white;
+  display: flex;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 20px;
+  align-items: center;
+  transform: translateX(50%);
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.strip-color{
+  width: 5px;
+  height: 100%;
+  background-color: green;
+}
+
+.message{
+  padding-left: 20px;
+}
+.close{
+  margin-left: auto;
+  cursor: pointer;
+  padding-right: 10px;
+
+}
+
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #FFF;
+  border-bottom-color:gray ;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  }
+
+  @keyframes rotation {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+  } 

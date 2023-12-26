@@ -1,5 +1,14 @@
+import { Client, Databases,ID} from "appwrite";
+import { PROJECT_ID } from "../utils/secret";
 const client = new Client();
+
+const databases = new Databases(client);
 
 client
     .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('658a5f3544cda48afc75');
+    .setProject(PROJECT_ID);
+
+
+
+export { client, databases,ID };
+
