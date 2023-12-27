@@ -170,7 +170,7 @@ rightArrow.addEventListener("click", async () => {
     try {
         const genresArr = await databases.listDocuments(DATABASE_ID, COLLECTION_ID,
             [
-                Query.limit(3),
+                Query.limit(limit),
                 Query.cursorAfter(LAST_ID)
             ]
         );
