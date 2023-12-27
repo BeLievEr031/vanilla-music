@@ -1,6 +1,7 @@
 const hotToast = document.querySelector(".hot-toast")
 const stripColor = document.querySelector(".strip-color")
 const message = document.querySelector(".message")
+const body = document.querySelector("body")
 let setTimerID = null;
 const toast = (success, msg) => {
     if (success) {
