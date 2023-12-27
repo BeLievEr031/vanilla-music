@@ -1,0 +1,1 @@
+[+] Bug in pagination while adding new genre.
