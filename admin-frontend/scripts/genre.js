@@ -1,15 +1,30 @@
+import { ID, databases, Query } from "../appwrite/config";
+let limit = 3;
+let page = 1;
+let totalDocuments = 0;
 
 (async () => {
-    const genresArr = await databases.listDocuments(DATABASE_ID, COLLECTION_ID);
-    console.log(genresArr);
-    genresArr.documents.forEach((genre, index) => {
-        const genreRow = handleGenreRowHTMLCreate(genre.name, genre.$id)
-        genreBox.append(genreRow)
-    })
+    try {
+        const genresArr = await databases.listDocuments(DATABASE_ID, COLLECTION_ID,
+            [
+                Query.limit(limit),
+                Query.offset((page - 1) * limit)
+            ]
+        );
+        totalDocuments = genresArr.total;
+        // console.log(genresArr);
+        LAST_ID = genresArr.documents[genresArr.documents.length - 1].$id;
+        genresArr.documents.forEach((genre, index) => {
+            const genreRow = handleGenreRowHTMLCreate(genre.name, genre.$id)
+            genreBox.append(genreRow)
+        })
+    } catch (error) {
+        console.log(error);
+    }
+
 
 })()
 
-import { ID, databases } from "../appwrite/config";
 import { COLLECTION_ID, DATABASE_ID } from "../utils/secret";
 import toast from "../utils/toast";
 const genreCont = document.querySelector(".s-g-box-cont");
@@ -17,8 +32,12 @@ const genreInput = document.querySelector("#genre-input");
 const createBtn = document.querySelector("#create-btn");
 const updateBtn = document.querySelector("#update-btn");
 const genreBox = document.querySelector(".genre-box");
+const leftArrow = document.querySelector(".left-arrow")
+const rightArrow = document.querySelector(".right-arrow")
+const pageNo = document.querySelector(".page-no")
 let DOCUMENT_ID = null;
 let selectedGenreForUpdate = null;
+let LAST_ID = null;
 const musicGenres = ['Pop', 'Rock', 'Hip Hop', 'R&B', 'Country', 'Jazz', 'Blues', 'Electronic', 'Reggae', 'Classical', 'Folk', 'Indie', 'Metal', 'Punk', 'Soul', 'Funk', 'Dance', 'Alternative', 'Gospel', 'World Music',];
 
 musicGenres.forEach((element, index, arr) => {
@@ -119,7 +138,6 @@ const createElmeAndAddClasses = (elem, classes = [], innerText = "", innerHTML =
 genreBox.addEventListener("click", function (e) {
     if (e.target.className.includes("edit")) {
         const genreForUpdate = e.target.parentNode.previousElementSibling.innerText;
-        console.log(45);
         DOCUMENT_ID = e.target.parentNode._id;
         genreInput.value = genreForUpdate;
         toggleCreateUpdateBtn(true);
@@ -143,3 +161,70 @@ const toggleCreateUpdateBtn = (isUpdate) => {
         createBtn.classList.add("active-btn")
     }
 }
+
+rightArrow.addEventListener("click", async () => {
+    if (page < Math.ceil(totalDocuments / limit)) {
+    } else {
+        return toast(false, "You are on last page");
+    }
+    try {
+        const genresArr = await databases.listDocuments(DATABASE_ID, COLLECTION_ID,
+            [
+                Query.limit(3),
+                Query.cursorAfter(LAST_ID)
+            ]
+        );
+
+        if (genresArr.documents.length !== 0) {
+            const genreRows = genreBox.querySelectorAll(".genre-row")
+            genreRows.forEach((elem) => {
+                genreBox.removeChild(elem)
+            })
+            page = page + 1
+            pageNo.innerText = page;
+            LAST_ID = genresArr.documents[genresArr.documents.length - 1].$id;
+            genresArr.documents.forEach((genre, index) => {
+                const genreRow = handleGenreRowHTMLCreate(genre.name, genre.$id)
+                genreBox.append(genreRow)
+            })
+
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+leftArrow.addEventListener("click", async () => {
+    if (page === 1) {
+        return toast(false, "You are on first page !!");
+    }
+    try {
+        page = page - 1
+        const genresArr = await databases.listDocuments(DATABASE_ID, COLLECTION_ID,
+            [
+                Query.limit(limit),
+                Query.offset((page - 1) * limit)
+            ]
+        );
+
+        if (genresArr.documents.length !== 0) {
+            const genreRows = genreBox.querySelectorAll(".genre-row")
+            genreRows.forEach((elem) => {
+                genreBox.removeChild(elem)
+            })
+            pageNo.innerText = page;
+            LAST_ID = genresArr.documents[genresArr.documents.length - 1].$id;
+            genresArr.documents.forEach((genre, index) => {
+                const genreRow = handleGenreRowHTMLCreate(genre.name, genre.$id)
+                genreBox.append(genreRow)
+            })
+
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+

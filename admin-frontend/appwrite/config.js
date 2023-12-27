@@ -1,4 +1,4 @@
-import { Client, Databases,ID} from "appwrite";
+import { Client, Databases,ID,Query} from "appwrite";
 import { PROJECT_ID } from "../utils/secret";
 const client = new Client();
 
@@ -10,5 +10,5 @@ client
 
 
 
-export { client, databases,ID };
+export { client, databases,ID,Query };
 
