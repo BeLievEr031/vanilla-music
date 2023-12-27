@@ -1,5 +1,5 @@
 import { ID, databases, Query } from "../appwrite/config";
-let limit = 3;
+let limit = 10;
 let page = 1;
 let totalDocuments = 0;
 
@@ -61,11 +61,21 @@ createBtn.addEventListener("click", async function () {
     try {
         this.innerHTML = `<span class="loader"></span>`
         const response = await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), { name: genreInput.value.toLowerCase() });
-        console.log(response);
         const genreRow = await handleGenreRowHTMLCreate(genreInput.value, response.$id)
-        if (genreRow) {
+        let totalDocumentOnPage = genreBox.querySelectorAll(".genre-row").length
+
+        if (limit !== totalDocumentOnPage && genreRow) {
             genreBox.append(genreRow)
+            totalDocumentOnPage += 1;
+            if (page < Math.ceil(totalDocuments / limit)) {
+            } else {
+                console.log(45);
+                if (limit === totalDocumentOnPage) {
+                    totalDocuments += 1;
+                }
+            }
         }
+
         toast(true, "Genre added successfully")
         createBtn.innerHTML = "Create Genre"
         genreInput.value = ""
@@ -79,7 +89,6 @@ createBtn.addEventListener("click", async function () {
 
 
 })
-
 
 updateBtn.addEventListener("click", async function () {
     if (!DOCUMENT_ID) {
@@ -105,6 +114,7 @@ updateBtn.addEventListener("click", async function () {
     }
 
 })
+
 
 // 🔥🔥🔥🔥🔥 Function Number 1 🔥🔥🔥🔥🔥
 const handleGenreRowHTMLCreate = (genre, _id) => {
@@ -135,13 +145,23 @@ const createElmeAndAddClasses = (elem, classes = [], innerText = "", innerHTML =
     return createdElement;
 }
 
-genreBox.addEventListener("click", function (e) {
+genreBox.addEventListener("click", async function (e) {
     if (e.target.className.includes("edit")) {
         const genreForUpdate = e.target.parentNode.previousElementSibling.innerText;
         DOCUMENT_ID = e.target.parentNode._id;
         genreInput.value = genreForUpdate;
         toggleCreateUpdateBtn(true);
         selectedGenreForUpdate = e.target.parentNode.previousElementSibling;
+    } else if (e.target.className.includes("delete")) {
+        try {
+            console.log(e.target.parentNode._id);
+            const result = await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, e.target.parentNode._id);
+            e.target.parentNode.previousElementSibling.parentNode.remove()
+            return toast(true, "Genre Deleted Successfully !!")
+        } catch (error) {
+            console.log(error);
+            return toast(false, "Error while deleting genre !!")
+        }
     }
     return;
 })
@@ -163,6 +183,7 @@ const toggleCreateUpdateBtn = (isUpdate) => {
 }
 
 rightArrow.addEventListener("click", async () => {
+    console.log(totalDocuments);
     if (page < Math.ceil(totalDocuments / limit)) {
     } else {
         return toast(false, "You are on last page");
