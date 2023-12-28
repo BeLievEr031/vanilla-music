@@ -6,7 +6,7 @@ let totalDocuments = 0;
 
 (async () => {
     try {
-        const genresArr = await databases.listDocuments(DATABASE_ID, COLLECTION_ID,
+        const genresArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
             [
                 Query.limit(limit),
                 Query.offset((page - 1) * limit)
@@ -26,7 +26,7 @@ let totalDocuments = 0;
 
 })()
 
-import { COLLECTION_ID, DATABASE_ID } from "../utils/secret";
+import { GENRE_COLLECTION_ID, DATABASE_ID } from "../utils/secret";
 import toast from "../utils/toast";
 const genreCont = document.querySelector(".s-g-box-cont");
 const genreInput = document.querySelector("#genre-input");
@@ -61,7 +61,7 @@ createBtn.addEventListener("click", async function () {
     }
     try {
         this.innerHTML = `<span class="loader"></span>`
-        const response = await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), { name: genreInput.value.toLowerCase() }
+        const response = await databases.createDocument(DATABASE_ID, GENRE_COLLECTION_ID, ID.unique(), { name: genreInput.value.toLowerCase() }
         ,[
             Permission.read(Role.any()),
             Permission.update(Role.any()),
@@ -106,7 +106,7 @@ updateBtn.addEventListener("click", async function () {
     }
     try {
         this.innerHTML = `<span class="loader"></span>`
-        const response = await databases.updateDocument(DATABASE_ID, COLLECTION_ID, DOCUMENT_ID, { name: genreInput.value.toLowerCase() });
+        const response = await databases.updateDocument(DATABASE_ID, GENRE_COLLECTION_ID, DOCUMENT_ID, { name: genreInput.value.toLowerCase() });
         toast(true, "Genre updated successfully")
         updateBtn.innerHTML = "Update Genre";
         selectedGenreForUpdate.innerText = genreInput.value;
@@ -162,7 +162,7 @@ genreBox.addEventListener("click", async function (e) {
     } else if (e.target.className.includes("delete")) {
         try {
             console.log(e.target.parentNode._id);
-            const result = await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, e.target.parentNode._id+"");
+            const result = await databases.deleteDocument(DATABASE_ID, GENRE_COLLECTION_ID, e.target.parentNode._id+"");
             e.target.parentNode.previousElementSibling.parentNode.remove()
             return toast(true, "Genre Deleted Successfully !!")
         } catch (error) {
@@ -196,7 +196,7 @@ rightArrow.addEventListener("click", async () => {
         return toast(false, "You are on last page");
     }
     try {
-        const genresArr = await databases.listDocuments(DATABASE_ID, COLLECTION_ID,
+        const genresArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
             [
                 Query.limit(limit),
                 Query.cursorAfter(LAST_ID)
@@ -229,7 +229,7 @@ leftArrow.addEventListener("click", async () => {
     }
     try {
         page = page - 1
-        const genresArr = await databases.listDocuments(DATABASE_ID, COLLECTION_ID,
+        const genresArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
             [
                 Query.limit(limit),
                 Query.offset((page - 1) * limit)
