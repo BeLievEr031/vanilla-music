@@ -25,3 +25,27 @@ const refreceForHandleGenreRowHTMLCreateFunction = () => {
     // genreDelete.classList.add("delete")
     // genreDelete.innerHTML = `<span class="material-symbols-outlined"> delete </span>`
 }
+
+
+
+
+const dragAndDropRefrence = () => {
+
+    // Prevent default behaviors for drag events
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+
+    // Highlight drop area when dragging over it
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false);
+    });
+
+
+    // Remove highlighting when leaving the drop area
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+    });
+}

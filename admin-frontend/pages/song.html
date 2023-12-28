@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vanilla Music admin</title>
     <link rel="stylesheet" href="../css/utility.css" />
+    <link rel="stylesheet" href="../css/song.css" />
   </head>
   <body>
     <div class="container">
@@ -24,9 +25,42 @@
         </ul>
       </aside>
 
-      <section>
-        <h1>Song</h1>
+      <section class="song-section">
+        <div class="main">
+          <h1>Song Details</h1>
+          <div>
+            <label for="song-title">Title</label>
+            <input
+              type="text"
+              name="song-title"
+              class="input-default"
+              placeholder="Enter Song title"
+            />
+          </div>
+
+          <div class="lyrics-box">
+            <label for="song-lyrics"> Lyrics </label>
+            <textarea
+              name="song-lyrics"
+              id="lyrics"
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <div class="music-upload drop-area" id="drop-area">
+            <input type="file" id="fileInput" multiple/>
+            <!-- <img src="../public/music-upload.jpg" alt=""> -->
+          </div>
+        </div>
+        <div class="side">
+          <div id="preview-container">
+            <audio id="audio" controls >
+              <source src="../public/test-music.webm" type="audio/mpeg"/>
+            </audio>
+          </div>
+        </div>
       </section>
     </div>
+    <script type="module" src="../scripts/song.js"></script>
   </body>
 </html>
