@@ -1,4 +1,5 @@
-import { ID, databases, Query } from "../appwrite/config";
+import { Role } from "appwrite";
+import { ID, databases, Query,Permission } from "../appwrite/config";
 let limit = 10;
 let page = 1;
 let totalDocuments = 0;
@@ -60,7 +61,13 @@ createBtn.addEventListener("click", async function () {
     }
     try {
         this.innerHTML = `<span class="loader"></span>`
-        const response = await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), { name: genreInput.value.toLowerCase() });
+        const response = await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), { name: genreInput.value.toLowerCase() }
+        ,[
+            Permission.read(Role.any()),
+            Permission.update(Role.any()),
+            Permission.delete(Role.any())
+        ]
+        );
         const genreRow = await handleGenreRowHTMLCreate(genreInput.value, response.$id)
         let totalDocumentOnPage = genreBox.querySelectorAll(".genre-row").length
 
@@ -155,7 +162,7 @@ genreBox.addEventListener("click", async function (e) {
     } else if (e.target.className.includes("delete")) {
         try {
             console.log(e.target.parentNode._id);
-            const result = await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, e.target.parentNode._id);
+            const result = await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, e.target.parentNode._id+"");
             e.target.parentNode.previousElementSibling.parentNode.remove()
             return toast(true, "Genre Deleted Successfully !!")
         } catch (error) {
