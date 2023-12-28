@@ -1,0 +1,68 @@
+.artist-section {
+  display: flex;
+  gap: 20px;
+  padding: 20px 10px;
+}
+
+.artist-box {
+  width: 70%;
+  height: 100%;
+  padding: 5px 15px;
+  color: white;
+  position: relative;
+}
+
+.artist-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 20px;
+  border: 2px solid white;
+  border-radius: 5px;
+  margin-top: 12px;
+}
+
+.a-name {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.a-action-btn div {
+  cursor: pointer;
+}
+
+.create-artist-box {
+  width: 25%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+button {
+  height: 10vh;
+  background-color: rgba(65, 63, 63, 0.8);
+  outline: none;
+  border: none;
+  font-size: 25px;
+  color: white;
+  border-radius: 10px;
+}
+
+.suggestion-artist {
+  color: white;
+}
+
+.suggestion-artist div{
+    display: flex;
+    padding: 10px 0;
+    width: 100%;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.s-g-box {
+  padding: 10px;
+  background-color: rgba(65, 63, 63, 0.8);
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+}

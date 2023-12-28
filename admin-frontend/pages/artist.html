@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vanilla Music admin</title>
     <link rel="stylesheet" href="../css/utility.css" />
+    <link rel="stylesheet" href="../css/artist.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
   </head>
   <body>
     <div class="container">
@@ -15,7 +20,7 @@
           <li>
             <a href="/" class="reset-anchor">Genre</a>
           </li>
-          <li>
+          <li id="artist-link">
             <a href="#" class="reset-anchor">Artist</a>
           </li>
           <li>
@@ -24,9 +29,60 @@
         </ul>
       </aside>
 
-      <section>
-        <h1>Artist</h1>
+      <section class="artist-section">
+        <div class="artist-box">
+          <div class="pagination">
+            <div class="material-symbols-outlined left-arrow">
+              keyboard_double_arrow_left
+            </div>
+            <div class="page-no">1</div>
+            <div class="material-symbols-outlined right-arrow">
+              keyboard_double_arrow_right
+            </div>
+          </div>
+        </div>
+
+        <div class="create-artist-box">
+          <input
+            type="text"
+            class="input-default"
+            id="artist-input"
+            placeholder="Enter artist"
+          />
+          <button id="create-btn" class="active-btn">Create artist</button>
+          <button id="update-btn" class="unactive-btn">Update artist</button>
+
+          <div class="suggestion-artist">
+            <h1>Some Suggestions</h1>
+            <div class="a-g-box-cont"></div>
+          </div>
+        </div>
       </section>
     </div>
+
+    <div class="hot-toast">
+      <div class="strip-color"></div>
+      <div class="message">Success</div>
+      <div class="close">
+        <span class="material-symbols-outlined"> close </span>
+      </div>
+    </div>
+    <script>
+      (() => {
+        const url = window.location.href;
+        const splittedArr = url.split("/");
+        if (splittedArr[splittedArr.length - 1] === "artist.html") {
+          document
+            .querySelector("#artist-link")
+            .classList.add("active-siebar-link");
+        } else {
+          document
+            .querySelector("#artist-link")
+            .classList.remove("active-siebar-link");
+        }
+      })();
+    </script>
+    <script type="module" src="../utils/toast.js"></script>
+    <script type="module" src="../scripts/artist.js"></script>
   </body>
 </html>
