@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vanilla Music admin</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
     <link rel="stylesheet" href="../css/utility.css" />
     <link rel="stylesheet" href="../css/song.css" />
   </head>
@@ -48,18 +52,48 @@
           </div>
 
           <div class="music-upload drop-area" id="drop-area">
-            <input type="file" id="fileInput" multiple/>
-            <!-- <img src="../public/music-upload.jpg" alt=""> -->
+            <input type="file" id="fileInput" multiple />
+          </div>
+
+          <div class="music-player">
+            <div class="audio-visulizer"></div>
+            <div class="audio-controls">
+              <div>
+                <div class="material-symbols-outlined">fast_rewind</div>
+                <div class="material-symbols-outlined">skip_previous</div>
+                <div class="material-symbols-outlined" id="play">
+                  play_arrow
+                </div>
+                <div class="material-symbols-outlined">skip_next</div>
+                <div class="material-symbols-outlined">fast_forward</div>
+              </div>
+
+              <div class="progressBar">
+                <div class="myBar"></div>
+              </div>
+              <div class="duration"><span id="c-time">00:00</span> / <span id="t-duration">00:00</span></div>
+
+              <div class="material-symbols-outlined" id="volume-up">
+                volume_up
+              </div>
+            </div>
           </div>
         </div>
-        <div class="side">
-          <div id="preview-container">
-            <audio id="audio" controls >
-              <source src="../public/test-music.webm" type="audio/mpeg"/>
-            </audio>
-          </div>
+        <div class="side"></div>
+
+        <div id="preview-container">
+          <!-- <audio id="audio" controls >
+        <source src="../public/test-music.webm" type="audio/mpeg"/>
+      </audio> -->
         </div>
       </section>
+    </div>
+    <div class="hot-toast">
+      <div class="strip-color"></div>
+      <div class="message">Success</div>
+      <div class="close">
+        <span class="material-symbols-outlined"> close </span>
+      </div>
     </div>
     <script type="module" src="../scripts/song.js"></script>
   </body>

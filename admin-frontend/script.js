@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     play.addEventListener("click", () => {
         audio.play();
     })
+    
     pause.addEventListener("click", () => {
         audio.pause();
     })
@@ -55,28 +56,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Update current time during playback
     let myBar = document.querySelector('.myBar')
-
     audio.addEventListener('timeupdate', function (e) {
         e.stopPropagation();
         e.preventDefault();
-        // console.log(45);
         const currentSeconds = audio.currentTime;
         console.log(tduration);
         if (currentSeconds > (calculationCount * intervalInSeconds)) {
-            // Perform your calculation here
             console.log(45);
             let percent = (Math.floor(currentSeconds) / Math.ceil(tduration))
             console.log((Math.floor(currentSeconds) / Math.ceil(tduration) * 100) + "%");
             myBar.style.width = (percent * 100) + "%";
             calculationCount++;
         }
-
-        // let percent = (currentSeconds / tduration)
-        // console.log(currentSeconds);
-
-        // console.log(tduration);
-        // console.log(percent);
-        // myBar.style.width = (percent * 100) + "%";
     });
 
 

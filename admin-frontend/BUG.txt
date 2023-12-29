@@ -1,1 +1,2 @@
 [+] Bug in pagination while adding new genre.
+[+] Check for valid mp3 file.

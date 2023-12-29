@@ -1,7 +1,14 @@
+import toast from "../utils/toast";
+
 document.addEventListener('DOMContentLoaded', () => {
     const dropArea = document.getElementById('drop-area');
     const fileInput = document.getElementById('fileInput');
     const previewContainer = document.getElementById('preview-container');
+    const musicPlayer = document.querySelector(".music-player")
+    let playAndPause = document.querySelector("#play")
+    let audioVisualizer = document.querySelector(".audio-visulizer")
+    let audioElement = null;
+    let isPlay = false;
 
     dropArea.addEventListener("dragenter", (e) => {
         preventDefaults(e)
@@ -27,9 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
     dropArea.addEventListener("click", () => {
         fileInput.click();
     })
-    
+
     // Handle file input change
     fileInput.addEventListener('change', (e) => {
+        console.log(e.target.files[0]);
         handleFiles(e.target.files)
     }, false);
 
@@ -64,16 +72,87 @@ document.addEventListener('DOMContentLoaded', () => {
 
         reader.readAsDataURL(file);
         reader.onloadend = function () {
+
+            const tempAudio = previewContainer.querySelector("audio");
+            if (tempAudio) {
+                tempAudio.remove()
+            }
             const audio = document.createElement('audio');
             audio.setAttribute("controls", "")
             const source = document.createElement('source');
             source.setAttribute("type", "audio/mpeg")
 
             source.src = reader.result;
-            console.log(reader);
 
             audio.appendChild(source)
             previewContainer.appendChild(audio);
+            audioElement = audio;
+
+            dropArea.style.display = "none"
+            musicPlayer.style.display = "block"
+            handleProgressBar(audioElement)
+            toast(true, "song loaded successfully !!")
+
         };
     }
+
+    playAndPause.addEventListener("click", function () {
+        if (!audioElement) return toast(false, "Error while loading song")
+        if (!isPlay) {
+            audioElement.play();
+            this.innerText = "pause"
+            audioVisualizer.style.backgroundImage = "url(../public/audio-visualizer.gif)"
+        } else {
+            audioElement.pause();
+            this.innerText = "play_arrow"
+            audioVisualizer.style.backgroundImage = "url(../public/pause-audio-visualizer.png)"
+        }
+
+        isPlay = !isPlay;
+    })
+
+
+    const myBar = document.querySelector(".myBar")
+    var calculationCount = 1;
+    var intervalInSeconds = 3;
+    let tduration = null;
+
+    function handleProgressBar(audioElement) {
+        let cTime = document.querySelector("#c-time")
+        let totalDuration = document.querySelector("#t-duration")
+        audioElement.addEventListener('timeupdate', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            if (tduration === null) {
+                tduration = audioElement.duration;
+                totalDuration.innerText = formatAudioDuration(tduration);
+            }
+
+            cTime.innerText = formatAudioDuration(audioElement.currentTime);
+
+            const currentSeconds = audioElement.currentTime;
+            if (currentSeconds > (calculationCount * intervalInSeconds)) {
+                let percent = (Math.floor(currentSeconds) / Math.ceil(tduration))
+                console.log((Math.floor(currentSeconds) / Math.ceil(tduration) * 100) + "%");
+                myBar.style.width = (percent * 100) + "%";
+                calculationCount++;
+            }
+        });
+    }
+
+
+    function formatAudioDuration(durationInSeconds) {
+        const minutes = Math.floor(durationInSeconds / 60);
+        const seconds = Math.floor(durationInSeconds % 60);
+
+        // Add leading zero if seconds is a single digit
+        const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+
+        return `${minutes}:${formattedSeconds}`;
+    }
+
 });
+
+
+
