@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const musicPlayer = document.querySelector(".music-player")
     let playAndPause = document.querySelector("#play")
     let audioVisualizer = document.querySelector(".audio-visulizer")
+    const progressBar = document.querySelector(".progressBar")
     let audioElement = null;
     let isPlay = false;
 
@@ -150,6 +151,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
 
         return `${minutes}:${formattedSeconds}`;
+    }
+
+    progressBar.addEventListener("click", (event) => {
+        seek(event)
+    })
+
+    let isLeftDown = false;
+
+    progressBar.addEventListener("mousedown", (e) => {
+        if (e.buttons === 1) {
+            isLeftDown = true;
+            audioElement.pause()
+        }
+    })
+
+    progressBar.addEventListener("mousemove", (event) => {
+        if (isLeftDown) {
+            seek(event)
+        }
+    })
+
+    progressBar.addEventListener("mouseup", (event) => {
+        isLeftDown = false;
+        seek(event, true)
+    })
+
+    function seek(event, isMouseUp = false) {
+        var percent = (event.offsetX / progressBar.offsetWidth);
+        myBar.style.width = `${percent * 100}%`
+        if (audioElement && isMouseUp) {
+            audioElement.currentTime = percent * audioElement.duration
+            audioElement.play()
+        }
     }
 
 });
