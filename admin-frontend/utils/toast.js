@@ -15,7 +15,7 @@ const toast = (success, msg) => {
 
     setTimerID = setTimeout(() => {
         hotToast.style.opacity = 0;
-        hotToast.style.transform = `translateX(50%)`
+        hotToast.style.transform = `translateX(100%)`
     }, 1500)
 }
 

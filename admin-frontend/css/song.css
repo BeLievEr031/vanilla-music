@@ -161,6 +161,8 @@ label {
   width: 100%;
   margin-top: auto;
   padding: 0 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .song-action-btn button {
@@ -185,9 +187,16 @@ label {
   display: flex;
   gap: 10px;
 }
+
 #cancel,
 #post {
-  width: 50%;
+  /* width: 50%; */
+
+}
+
+#post{
+  background-color: rebeccapurple;
+
 }
 
 .artist-in-db,

@@ -1,5 +1,5 @@
-import { client, Query, databases } from "../appwrite/config";
-import { ARTIST_COLLECTION_ID, DATABASE_ID, GENRE_COLLECTION_ID } from "../utils/secret";
+import { client, Query, databases, storage, ID } from "../appwrite/config";
+import { ARTIST_COLLECTION_ID, BUCKET_ID, DATABASE_ID, GENRE_COLLECTION_ID, SONG_COLLECTION_ID } from "../utils/secret";
 import toast from "../utils/toast";
 document.addEventListener('DOMContentLoaded', async () => {
     const dropArea = document.getElementById('drop-area');
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const progressBar = document.querySelector(".progressBar")
     let audioElement = null;
     let isPlay = false;
+    let actualSongForUpload = null;
 
     dropArea.addEventListener("dragenter", (e) => {
         preventDefaults(e)
@@ -40,6 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Handle file input change
     fileInput.addEventListener('change', (e) => {
         console.log(e.target.files[0]);
+        actualSongForUpload = e.target.files[0];
         handleFiles(e.target.files)
     }, false);
 
@@ -61,6 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const dt = e.dataTransfer;
         const files = dt.files;
         console.log(files);
+        actualSongForUpload = files[0]
         handleFiles(files);
     }
 
@@ -332,6 +335,59 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     genreNameInp.addEventListener("input", fetchedGenreData)
     artistNameInp.addEventListener("input", fetchedArtistData)
+
+    const post = document.querySelector("#post")
+    const title = document.querySelector(`input[name=song-title]`)
+    post.addEventListener("click", async () => {
+        if (!actualSongForUpload || title.value.trim().length === 0 ||
+            genreNameInp.value.trim().length === 0 ||
+            artistNameInp.value.trim().length === 0
+        ) {
+            return toast(false, "All fields required !!")
+        }
+
+        const uploadOptions = {
+            onUpload: (progress) => {
+                console.log(45);
+                const percent = Math.round(progress * 100);
+                // progressBar.value = percent;
+                post.textContent = `${percent}%`;
+            },
+        };
+
+        console.log("uploading started...");
+        try {
+            let response = await storage.createFile(
+                BUCKET_ID,
+                ID.unique(),
+                actualSongForUpload,
+                [],
+                {
+                    onUpload: (progress) => {
+                        const percent = Math.round(progress * 100);
+                        // progressBar.value = percent;
+                        console.log(45);
+                        post.textContent = `${percent}%`;
+                    },
+                }
+            );
+
+            console.log(response);
+
+            if (response) {
+                const responseSong = await databases.createDocument(DATABASE_ID, SONG_COLLECTION_ID, ID.unique(), {
+                    songid: response.$id,
+                    title: title.value.trim(),
+                    genre: genreNameInp.value.trim(),
+                    artist: artistNameInp.value.trim()
+                });
+                console.log(responseSong); // Success
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    })
 });
 
 
