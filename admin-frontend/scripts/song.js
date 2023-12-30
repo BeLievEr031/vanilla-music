@@ -1,4 +1,4 @@
-import { Query, databases } from "../appwrite/config";
+import { client, Query, databases } from "../appwrite/config";
 import { ARTIST_COLLECTION_ID, DATABASE_ID, GENRE_COLLECTION_ID } from "../utils/secret";
 import toast from "../utils/toast";
 document.addEventListener('DOMContentLoaded', async () => {
@@ -190,16 +190,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const genreBox = document.querySelector(".genre-in-db")
     const artistBox = document.querySelector(".artist-in-db")
-
+    let genresArr = [];
     const handleGenrePopulate = async () => {
         try {
-            const genresArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
+            genresArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
                 [
                     Query.limit(15),
                 ]
             );
             genresArr.documents.forEach((elem, index) => {
-                console.log(elem);
                 const span = document.createElement("span")
                 span.classList.add("genre-name")
                 span.innerText = elem.name
@@ -210,6 +209,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+
+
     const handleArtistPopulate = async () => {
         try {
             const artistArr = await databases.listDocuments(DATABASE_ID, ARTIST_COLLECTION_ID,
@@ -217,6 +218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     Query.limit(15),
                 ]
             );
+
             artistArr.documents.forEach((elem, index) => {
                 const span = document.createElement("span")
                 span.classList.add("artist-name")
@@ -231,6 +233,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     await handleGenrePopulate()
     await handleArtistPopulate()
 
+    const genreNameInp = document.querySelector("#genre-name-inp")
+
+
+    function debounce(func, delay) {
+        let timerId;
+
+        return function (...args) {
+            if (timerId) {
+                clearTimeout(timerId);
+            }
+
+            timerId = setTimeout(() => {
+                func.apply(this, args);
+                timerId = null;
+            }, delay);
+        };
+    }
+
+
+    const fetchedData = debounce(async () => {
+        if (genreNameInp.value.trim().length === 0) {
+            genreBox.innerHTML = ""
+            genresArr.documents.forEach((elem, index) => {
+                const span = document.createElement("span")
+                span.classList.add("genre-name")
+                span.innerText = elem.name
+                genreBox.appendChild(span)
+            })
+
+            return;
+        }
+
+        try {
+          
+            const searchedGenreArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
+                [
+                    Query.limit(15),
+                    Query.search("name", genreNameInp.value)
+                ]
+            );
+
+            if (searchedGenreArr.documents.length > 0) {
+                genreBox.innerHTML = ""
+            } else if (searchedGenreArr.documents.length === 0) {
+                genreBox.innerHTML = "No Genre found"
+                return;
+            }
+
+            searchedGenreArr.documents.forEach((elem, index) => {
+                const span = document.createElement("span")
+                span.classList.add("genre-name")
+                span.innerText = elem.name
+                genreBox.appendChild(span)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }, 1500)
+
+    genreNameInp.addEventListener("input", fetchedData)
 });
 
 
