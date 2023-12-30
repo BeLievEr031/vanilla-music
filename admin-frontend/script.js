@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     play.addEventListener("click", () => {
         audio.play();
     })
-    
+
     pause.addEventListener("click", () => {
         audio.pause();
     })
@@ -60,11 +60,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         e.stopPropagation();
         e.preventDefault();
         const currentSeconds = audio.currentTime;
-        console.log(tduration);
         if (currentSeconds > (calculationCount * intervalInSeconds)) {
-            console.log(45);
             let percent = (Math.floor(currentSeconds) / Math.ceil(tduration))
-            console.log((Math.floor(currentSeconds) / Math.ceil(tduration) * 100) + "%");
             myBar.style.width = (percent * 100) + "%";
             calculationCount++;
         }

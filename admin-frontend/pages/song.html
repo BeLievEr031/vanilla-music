@@ -49,6 +49,7 @@
               id="lyrics"
               spellcheck="false"
             ></textarea>
+
           </div>
 
           <div class="music-upload drop-area" id="drop-area">
@@ -71,7 +72,10 @@
               <div class="progressBar">
                 <div class="myBar"></div>
               </div>
-              <div class="duration"><span id="c-time">00:00</span> / <span id="t-duration">00:00</span></div>
+              <div class="duration">
+                <span id="c-time">00:00</span> /
+                <span id="t-duration">00:00</span>
+              </div>
 
               <div class="material-symbols-outlined" id="volume-up">
                 volume_up
@@ -79,7 +83,42 @@
             </div>
           </div>
         </div>
-        <div class="side"></div>
+        <div class="side">
+          <div class="thumbnail-box"></div>
+          <div class="select-genre">
+            <input
+              type="text"
+              name="song-title"
+              class="input-default"
+              placeholder="Enter genre name"
+            />
+
+            <div class="genre-in-db">
+              <!-- <span class="genre-name">Pop</span> -->
+            </div>
+          </div>
+
+          <div class="select-artist">
+            <input
+              type="text"
+              name="song-title"
+              class="input-default"
+              placeholder="Enter artist name"
+            />
+
+            <div class="artist-in-db">
+              <span class="artist-name">arijit singh</span>
+            </div>
+          </div>
+
+          <div class="song-action-btn">
+            <!-- <button id="extract-lyrics-btn">Extract Lyrics</button> -->
+            <div class="music-action-btn">
+              <button id="cancel">cancel</button>
+              <button id="post">post</button>
+            </div>
+          </div>
+        </div>
 
         <div id="preview-container">
           <!-- <audio id="audio" controls >

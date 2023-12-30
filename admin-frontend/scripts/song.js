@@ -1,6 +1,7 @@
+import { Query, databases } from "../appwrite/config";
+import { ARTIST_COLLECTION_ID, DATABASE_ID, GENRE_COLLECTION_ID } from "../utils/secret";
 import toast from "../utils/toast";
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const dropArea = document.getElementById('drop-area');
     const fileInput = document.getElementById('fileInput');
     const previewContainer = document.getElementById('preview-container');
@@ -185,6 +186,50 @@ document.addEventListener('DOMContentLoaded', () => {
             audioElement.play()
         }
     }
+
+
+    const genreBox = document.querySelector(".genre-in-db")
+    const artistBox = document.querySelector(".artist-in-db")
+
+    const handleGenrePopulate = async () => {
+        try {
+            const genresArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
+                [
+                    Query.limit(15),
+                ]
+            );
+            genresArr.documents.forEach((elem, index) => {
+                console.log(elem);
+                const span = document.createElement("span")
+                span.classList.add("genre-name")
+                span.innerText = elem.name
+                genreBox.appendChild(span)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleArtistPopulate = async () => {
+        try {
+            const artistArr = await databases.listDocuments(DATABASE_ID, ARTIST_COLLECTION_ID,
+                [
+                    Query.limit(15),
+                ]
+            );
+            artistArr.documents.forEach((elem, index) => {
+                const span = document.createElement("span")
+                span.classList.add("artist-name")
+                span.innerText = elem.name
+                artistBox.appendChild(span)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    await handleGenrePopulate()
+    await handleArtistPopulate()
 
 });
 

@@ -13,7 +13,6 @@ let totalDocuments = 0;
             ]
         );
         totalDocuments = genresArr.total;
-        // console.log(genresArr);
         LAST_ID = genresArr.documents[genresArr.documents.length - 1].$id;
         genresArr.documents.forEach((genre, index) => {
             const genreRow = handleGenreRowHTMLCreate(genre.name, genre.$id)

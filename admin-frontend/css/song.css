@@ -1,10 +1,11 @@
 .song-section {
   width: 85%;
   display: flex;
-  gap: 10px;
+  gap: 20px;
   color: white;
   padding: 10px 15px;
   user-select: none;
+  justify-content: center;
 }
 
 .main {
@@ -28,6 +29,7 @@ label {
   font-size: 18px;
   font-weight: 600;
 }
+
 .main textarea {
   background-color: transparent;
   color: white;
@@ -41,7 +43,13 @@ label {
   border-radius: 5px;
 }
 .side {
-  width: 15%;
+  width: 35%;
+  border: 1px solid white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
 }
 
 .music-upload {
@@ -105,13 +113,12 @@ label {
   align-items: center;
 }
 
-
 .audio-controls .material-symbols-outlined {
   font-size: 32px;
   cursor: pointer;
 }
 
-#preview-container{
+#preview-container {
   position: absolute;
   transform: translateX(-1000%);
 }
@@ -127,11 +134,10 @@ label {
   border-radius: 10px;
 }
 
-.myBar{
+.myBar {
   width: 0%;
   background-color: lightgreen;
   height: 100%;
-
 }
 
 #volume-up {
@@ -142,4 +148,67 @@ label {
   height: 100%;
   font-size: 18px;
   padding: 5px;
+}
+
+.thumbnail-box {
+  width: 100%;
+  height: 30%;
+  border-radius: 10px;
+  background-color: lightblue;
+}
+
+.song-action-btn {
+  width: 100%;
+  margin-top: auto;
+  padding: 0 10px;
+}
+
+.song-action-btn button {
+  width: 100%;
+  outline: none;
+  padding: 15px 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(54, 52, 52);
+  font-weight: 600;
+  color: white;
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+#extract-lyrics-btn {
+  margin-bottom: 10px;
+}
+
+.music-action-btn {
+  display: flex;
+  gap: 10px;
+}
+#cancel,
+#post {
+  width: 50%;
+}
+
+.artist-in-db,
+.genre-in-db {
+  height: 20vh;
+  margin-top: 5px;
+  width: 100%;
+  padding: 10px 5px;
+  border: 1px solid white;
+  border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.genre-name,
+.artist-name {
+  background-color: rgb(56, 54, 54);
+  padding: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: capitalize;
+  height: fit-content;
 }
