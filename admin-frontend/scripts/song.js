@@ -191,6 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const genreBox = document.querySelector(".genre-in-db")
     const artistBox = document.querySelector(".artist-in-db")
     let genresArr = [];
+    let artistsArr = [];
     const handleGenrePopulate = async () => {
         try {
             genresArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
@@ -210,16 +211,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
-
     const handleArtistPopulate = async () => {
         try {
-            const artistArr = await databases.listDocuments(DATABASE_ID, ARTIST_COLLECTION_ID,
+            artistsArr = await databases.listDocuments(DATABASE_ID, ARTIST_COLLECTION_ID,
                 [
                     Query.limit(15),
                 ]
             );
 
-            artistArr.documents.forEach((elem, index) => {
+            artistsArr.documents.forEach((elem, index) => {
                 const span = document.createElement("span")
                 span.classList.add("artist-name")
                 span.innerText = elem.name
@@ -234,6 +234,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await handleArtistPopulate()
 
     const genreNameInp = document.querySelector("#genre-name-inp")
+    const artistNameInp = document.querySelector("#artist-name-inp")
 
 
     function debounce(func, delay) {
@@ -251,8 +252,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-
-    const fetchedData = debounce(async () => {
+    const fetchedGenreData = debounce(async () => {
         if (genreNameInp.value.trim().length === 0) {
             genreBox.innerHTML = ""
             genresArr.documents.forEach((elem, index) => {
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         try {
-          
+
             const searchedGenreArr = await databases.listDocuments(DATABASE_ID, GENRE_COLLECTION_ID,
                 [
                     Query.limit(15),
@@ -292,7 +292,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }, 1500)
 
-    genreNameInp.addEventListener("input", fetchedData)
+    const fetchedArtistData = debounce(async () => {
+        if (artistNameInp.value.trim().length === 0) {
+            artistBox.innerHTML = ""
+            artistsArr.documents.forEach((elem, index) => {
+                const span = document.createElement("span")
+                span.classList.add("genre-name")
+                span.innerText = elem.name
+                artistBox.appendChild(span)
+            })
+            return;
+        }
+
+        try {
+            const searchedGenreArr = await databases.listDocuments(DATABASE_ID, ARTIST_COLLECTION_ID,
+                [
+                    Query.limit(15),
+                    Query.search("name", artistNameInp.value)
+                ]
+            );
+
+            if (searchedGenreArr.documents.length > 0) {
+                artistBox.innerHTML = ""
+            } else if (searchedGenreArr.documents.length === 0) {
+                artistBox.innerHTML = "No Genre found"
+                return;
+            }
+
+            searchedGenreArr.documents.forEach((elem, index) => {
+                const span = document.createElement("span")
+                span.classList.add("artist-name")
+                span.innerText = elem.name
+                artistBox.appendChild(span)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }, 1500)
+
+    genreNameInp.addEventListener("input", fetchedGenreData)
+    artistNameInp.addEventListener("input", fetchedArtistData)
 });
 
 
