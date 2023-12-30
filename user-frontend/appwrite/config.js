@@ -1,5 +1,5 @@
 import { Client, Databases,ID,Query,Permission,Storage} from "appwrite";
-import { PROJECT_ID } from "../utils/secret";
+import { PROJECT_ID } from "../utils/sceret.js";
 const client = new Client();
 
 const databases = new Databases(client);
