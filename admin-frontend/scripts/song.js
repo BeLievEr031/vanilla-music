@@ -193,6 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const thumbnailBox = document.querySelector(".thumbnail-box")
     const thumbnailInp = document.querySelector("#thumbnail-inp")
+    let actualTumbnailForUoload = null;
 
     thumbnailBox.addEventListener("click", () => {
         thumbnailInp.click();
@@ -201,15 +202,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     thumbnailInp.addEventListener("change", (e) => {
         console.log(e.target.files[0]);
         const file = e.target.files[0]
+        actualTumbnailForUoload = file;
         const reader = new FileReader();//BOM FileReader
 
         reader.readAsDataURL(file);
         reader.onloadend = function () {
-
-
             thumbnailBox.style.backgroundImage = `url(${reader.result})`
-            // source.src = reader.result;
-
         };
     })
 
@@ -361,21 +359,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const post = document.querySelector("#post")
     const title = document.querySelector(`input[name=song-title]`)
     post.addEventListener("click", async () => {
-        if (!actualSongForUpload || title.value.trim().length === 0 ||
+        if (!actualTumbnailForUoload || !actualSongForUpload || title.value.trim().length === 0 ||
             genreNameInp.value.trim().length === 0 ||
             artistNameInp.value.trim().length === 0
         ) {
             return toast(false, "All fields required !!")
         }
-
-        const uploadOptions = {
-            onUpload: (progress) => {
-                console.log(45);
-                const percent = Math.round(progress * 100);
-                // progressBar.value = percent;
-                post.textContent = `${percent}%`;
-            },
-        };
 
         console.log("uploading started...");
         try {
@@ -383,25 +372,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 BUCKET_ID,
                 ID.unique(),
                 actualSongForUpload,
-                [],
-                {
-                    onUpload: (progress) => {
-                        const percent = Math.round(progress * 100);
-                        // progressBar.value = percent;
-                        console.log(45);
-                        post.textContent = `${percent}%`;
-                    },
-                }
+            );
+
+            let responseOfThumbnail = await storage.createFile(
+                BUCKET_ID,
+                ID.unique(),
+                actualTumbnailForUoload,
             );
 
             console.log(response);
+            console.log(responseOfThumbnail);
 
             if (response) {
                 const responseSong = await databases.createDocument(DATABASE_ID, SONG_COLLECTION_ID, ID.unique(), {
                     songid: response.$id,
                     title: title.value.trim(),
                     genre: genreNameInp.value.trim(),
-                    artist: artistNameInp.value.trim()
+                    artist: artistNameInp.value.trim(),
+                    thumbnailid: responseOfThumbnail.$id
                 });
                 console.log(responseSong); // Success
             }
