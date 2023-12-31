@@ -1,9 +1,7 @@
 (() => {
     const url = window.location.href;
     const splittedArr = url.split("/")
-    console.log(splittedArr[splittedArr.length - 1]);
     if (splittedArr[splittedArr.length - 1] === "home.html") {
-        console.log("hjh");
         document.querySelector("#home").classList.add("active-siebar-link")
     } else {
         document.querySelector("#home").classList.remove("active-siebar-link")
@@ -22,7 +20,6 @@ const populateSong = async () => {
                 Query.limit(3)
             ])
 
-        console.log(response);
         response.documents.forEach((element, index) => {
             const popularSongRow = document.createElement("div")
             popularSongRow.classList.add("popular-song-row")
@@ -44,20 +41,36 @@ const populateSong = async () => {
 
             popularSongRow.innerHTML = html;
             popularSongRow.querySelector("#play-btn")._songid = element.songid;
+            const img = popularSongRow.querySelector("img")
             popularSongRow._id = element.$id
+            const result = storage.getFileDownload(BUCKET_ID, element.thumbnailid);
+            img.src = result.href
 
             popularSongBox.appendChild(popularSongRow)
-
+            let isPlaying = false
             popularSongRow.addEventListener("click", async (e) => {
                 const audio = document.querySelector("audio")
                 if (e.target.id === "play-btn") {
-                    console.log(e.target._songid);
-                    const result = storage.getFileDownload(BUCKET_ID, e.target._songid);
-                    audio.src = result.href
-                    audio.play();
-                    console.log(result); //
-                    
-                    e.target.innerText = "pause"
+                    let result = null;
+                    if (!e.target._clicked) {
+                        result = storage.getFileDownload(BUCKET_ID, e.target._songid);
+                    }
+
+                    e.target._clicked = true
+
+                    if (result) {
+                        audio.src = result.href;
+                    }
+
+                    if (!isPlaying) {
+                        audio.play();
+                        e.target.innerText = "pause"
+                    } else {
+                        audio.pause();
+                        e.target.innerText = "play_arrow"
+                    }
+
+                    isPlaying = !isPlaying;
                 }
             })
 
