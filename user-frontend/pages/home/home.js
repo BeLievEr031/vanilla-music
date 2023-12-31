@@ -44,15 +44,12 @@ const populateSong = async () => {
 
             popularSongRow.innerHTML = html;
             popularSongRow.querySelector("#play-btn")._songid = element.songid;
-            // popularSongRow._songid = element.songid
             popularSongRow._id = element.$id
 
             popularSongBox.appendChild(popularSongRow)
 
             popularSongRow.addEventListener("click", async (e) => {
-                // console.log(e.target.id === "play-btn");
                 const audio = document.querySelector("audio")
-
                 if (e.target.id === "play-btn") {
                     console.log(e.target._songid);
                     const result = storage.getFileDownload(BUCKET_ID, e.target._songid);

@@ -191,6 +191,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
+    const thumbnailBox = document.querySelector(".thumbnail-box")
+    const thumbnailInp = document.querySelector("#thumbnail-inp")
+
+    thumbnailBox.addEventListener("click", () => {
+        thumbnailInp.click();
+    })
+
+    thumbnailInp.addEventListener("change", (e) => {
+        console.log(e.target.files[0]);
+        const file = e.target.files[0]
+        const reader = new FileReader();//BOM FileReader
+
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+
+
+            thumbnailBox.style.backgroundImage = `url(${reader.result})`
+            // source.src = reader.result;
+
+        };
+    })
+
     const genreBox = document.querySelector(".genre-in-db")
     const artistBox = document.querySelector(".artist-in-db")
     let genresArr = [];
