@@ -6,3 +6,5 @@ const SONG_COLLECTION_ID = "658fe43614555f4be886"
 const BUCKET_ID = "658fdba08c6ae0c62224"
 
 export { PROJECT_ID, BUCKET_ID, DATABASE_ID, GENRE_COLLECTION_ID, ARTIST_COLLECTION_ID, SONG_COLLECTION_ID };
+
+// https://preview.uiuxassets.com/opalin/index.html
