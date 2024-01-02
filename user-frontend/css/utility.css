@@ -222,3 +222,7 @@ nav {
   font-weight: 600;
   cursor: pointer;
 }
+
+.flex{
+  display: flex;
+}
