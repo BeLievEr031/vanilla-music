@@ -14,70 +14,12 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,100,1,200"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
 
-    <style>
-      #curr-genre {
-        text-transform: capitalize;
-      }
-
-      section {
-        display: flex;
-        flex-direction: column;
-      }
-
-      #genre-song-cont {
-        display: flex;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        width: 100%;
-        flex-grow: 1;
-        padding: 20px 10px;
-        justify-content: space-evenly;
-      }
-
-      .genre-song-box {
-        width: 300px;
-        height: 200px;
-        border-radius: 10px;
-        background-color: lightblue;
-        cursor: pointer;
-        background-image: url("../../public/pop-music.jpg");
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        justify-content: end;
-        align-items: start;
-        flex-direction: column;
-        padding: 10px;
-      }
-
-      .genre-song-box::after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        position: absolute;
-        background-color: rgba(20, 20, 20, 0.32);
-      }
-
-      .genre-song-box > div {
-        position: relative;
-        z-index: 99;
-      }
-
-      .song-title {
-        font-size: 25px;
-        font-weight: bold;
-      }
-
-      .song-artist {
-        font-size: 20px;
-      }
-    </style>
+    <link rel="stylesheet" href="./genre-song.css" />
   </head>
   <body>
     <div class="parent-cont">
@@ -174,6 +116,32 @@
             <div class="song-title">Sanam re</div>
             <div class="song-artist">Latish</div>
           </div> -->
+        </div>
+
+        <div class="music-player">
+          <div class="audio-controls">
+            <div>
+              <div class="material-symbols-outlined">fast_rewind</div>
+              <div class="material-symbols-outlined">skip_previous</div>
+              <div class="material-symbols-outlined" id="play">play_arrow</div>
+              <div class="material-symbols-outlined">skip_next</div>
+              <div class="material-symbols-outlined">fast_forward</div>
+            </div>
+
+            <div class="progressBar">
+              <div class="myBar"></div>
+            </div>
+
+            <div class="duration">
+              <span id="c-time">00:00</span> /
+              <span id="t-duration">00:00</span>
+            </div>
+
+            <div class="material-symbols-outlined" id="volume-up">
+              volume_up
+            </div>
+            
+          </div>
         </div>
       </section>
     </div>
