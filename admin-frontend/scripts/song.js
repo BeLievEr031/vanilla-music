@@ -359,6 +359,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const post = document.querySelector("#post")
     const title = document.querySelector(`input[name=song-title]`)
     post.addEventListener("click", async () => {
+
+
         if (!actualTumbnailForUoload || !actualSongForUpload || title.value.trim().length === 0 ||
             genreNameInp.value.trim().length === 0 ||
             artistNameInp.value.trim().length === 0
@@ -366,8 +368,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             return toast(false, "All fields required !!")
         }
 
-        console.log("uploading started...");
         try {
+            post.setAttribute("disabled", true)
+            post.innerText = "Uploading..."
             let response = await storage.createFile(
                 BUCKET_ID,
                 ID.unique(),
@@ -380,24 +383,33 @@ document.addEventListener('DOMContentLoaded', async () => {
                 actualTumbnailForUoload,
             );
 
-            console.log(response);
-            console.log(responseOfThumbnail);
-
             if (response) {
                 const responseSong = await databases.createDocument(DATABASE_ID, SONG_COLLECTION_ID, ID.unique(), {
                     songid: response.$id,
-                    title: title.value.trim(),
-                    genre: genreNameInp.value.trim(),
-                    artist: artistNameInp.value.trim(),
+                    title: title.value.toLowerCase().trim(),
+                    genre: genreNameInp.value.toLowerCase().trim(),
+                    artist: artistNameInp.value.toLowerCase().trim(),
                     thumbnailid: responseOfThumbnail.$id
                 });
                 console.log(responseSong); // Success
+                post.removeAttribute("disabled")
+                post.innerText = "Post"
+                toast(true, "Song uploaded.....")
+                setTimeout(() => {
+                    clearLoadedData();
+                }, 1000);
             }
 
         } catch (error) {
+            post.removeAttribute("disabled")
+            post.innerText = "Post"
             console.log(error);
         }
     })
+
+    const clearLoadedData = () => {
+        window.location.reload();
+    }
 });
 
 
