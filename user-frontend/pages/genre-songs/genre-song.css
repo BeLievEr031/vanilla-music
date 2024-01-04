@@ -115,3 +115,8 @@ section {
   font-size: 18px;
   padding: 5px;
 }
+
+audio{
+  position: absolute;
+  left: -200%;
+}
