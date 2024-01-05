@@ -7,14 +7,18 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
     // console.log(window.location.href.split("?")[1].split("=")[1]); // this will give the GENRE_NAME
     const activeGenre = document.querySelector("#curr-genre")
     const genreSongCont = document.querySelector("#genre-song-cont")
-    const audioElement = document.querySelector("audio")
+    let audioElement = document.querySelector("audio")
     let playAndPause = document.querySelector("#play")
     const progressBar = document.querySelector(".progressBar")
+    const section = document.querySelector("section")
+    let totalDuration = document.querySelector("#t-duration")
+
     const GENRE_NAME = window.location.href.split("?")[1].split("=")[1]
     activeGenre.innerHTML = GENRE_NAME;
     let isPlay = false;
     let songArr = null
     let index = 0;
+    let currSongBox = null;
     const fetchSongByGenreName = async () => {
         try {
             songArr = await databases.listDocuments(DATABASE_ID, SONG_COLLECTION_ID,
@@ -34,12 +38,31 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
                 songBox.innerHTML = html
                 genreSongCont.appendChild(songBox)
 
-                songBox.addEventListener("click", () => {
-                    const src = storage.getFileDownload(BUCKET_ID, element.songid);
-                    audioElement.src = src
-                    audioElement.play();
-                    handlePlayPause();
-                    handleProgressBar(audioElement);
+                songBox.addEventListener("click", async () => {
+                    try {
+                        const src = storage.getFileDownload(BUCKET_ID, element.songid);
+
+                        if (currSongBox) {
+                            audioElement.remove();
+                            handleReset()
+                            audioElement = document.createElement("audio")
+                            audioElement.setAttribute("controls", true)
+                            audioElement.src = src.href
+                            await audioElement.play();
+                            setTotalDuration(audioElement.duration)
+                            // handlePlayPause();
+                            handleProgressBar(audioElement);
+                            section.appendChild(audioElement)
+                        } else {
+                            console.log(src.href);
+                            audioElement.src = src.href
+                            handlePlayPause();
+                            handleProgressBar(audioElement);
+                        }
+                        currSongBox = songBox;
+                    } catch (error) {
+                        console.log(error);
+                    }
                 })
             })
 
@@ -57,14 +80,12 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
 
     function handleProgressBar(audioElement) {
         let cTime = document.querySelector("#c-time")
-        let totalDuration = document.querySelector("#t-duration")
         audioElement.addEventListener('timeupdate', function (e) {
             e.stopPropagation();
             e.preventDefault();
 
             if (tduration === null) {
-                tduration = audioElement.duration;
-                totalDuration.innerText = formatAudioDuration(tduration);
+                setTotalDuration(audioElement.duration)
             }
 
             cTime.innerText = formatAudioDuration(audioElement.currentTime);
@@ -72,7 +93,6 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
             const currentSeconds = audioElement.currentTime;
             if (currentSeconds > (calculationCount * intervalInSeconds)) {
                 let percent = (Math.floor(currentSeconds) / Math.ceil(tduration))
-                console.log((Math.floor(currentSeconds) / Math.ceil(tduration) * 100) + "%");
                 myBar.style.width = (percent * 100) + "%";
                 calculationCount++;
             }
@@ -148,7 +168,14 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
 
     })
 
+    function setTotalDuration(totalDurationTime) {
+        tduration = totalDurationTime;
+        totalDuration.innerText = formatAudioDuration(totalDurationTime);
+    }
+
     function handleReset() {
+        // console.log(tduration);
+        // alert(45)
         myBar.style.width = '0%'
         calculationCount = 1;
     }
