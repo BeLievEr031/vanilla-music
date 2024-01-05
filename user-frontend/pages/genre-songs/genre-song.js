@@ -38,28 +38,30 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
                 songBox.innerHTML = html
                 genreSongCont.appendChild(songBox)
 
-                songBox.addEventListener("click", async () => {
+                songBox.addEventListener("click", async function() {
                     try {
                         const src = storage.getFileDownload(BUCKET_ID, element.songid);
 
+                        if (currSongBox === this) {
+                            await handlePlayPause();
+                            return;
+                        }
+
                         if (currSongBox) {
-                            console.log(45);
                             audioElement.remove();
-                            handleReset()
                             audioElement = document.createElement("audio")
                             audioElement.setAttribute("controls", true)
                             audioElement.src = src.href
                             await audioElement.play();
                             setTotalDuration(audioElement.duration)
-                            // handlePlayPause();
-                            handleProgressBar(audioElement);
+                            handleProgressBar(audioElement, true);
                             section.appendChild(audioElement)
                         } else {
-                            console.log(src.href);
                             audioElement.src = src.href
                             await handlePlayPause();
                             handleProgressBar(audioElement);
                         }
+
                         currSongBox = songBox;
                     } catch (error) {
                         console.log(error);
@@ -79,19 +81,24 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
     var intervalInSeconds = 3;
     let tduration = null;
 
-    function handleProgressBar(audioElement) {
+    function handleProgressBar(audioElement, isReset = false) {
+        if (isReset) {
+            myBar.style.width = '0'
+            calculationCount = 1;
+        }
         let cTime = document.querySelector("#c-time")
-        audioElement.addEventListener('timeupdate', function (e) {
+        audioElement.addEventListener('timeupdate', async function (e) {
             e.stopPropagation();
             e.preventDefault();
 
             if (tduration === null) {
+                console.log("timeupdate tduration");
                 setTotalDuration(audioElement.duration)
             }
 
-            cTime.innerText = formatAudioDuration(audioElement.currentTime);
-
-            const currentSeconds = audioElement.currentTime;
+            let currTime = await audioElement.currentTime
+            cTime.innerText = formatAudioDuration(currTime);
+            const currentSeconds = await audioElement.currentTime;
             if (currentSeconds > (calculationCount * intervalInSeconds)) {
                 let percent = (Math.floor(currentSeconds) / Math.ceil(tduration))
                 myBar.style.width = (percent * 100) + "%";
