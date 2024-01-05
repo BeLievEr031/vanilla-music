@@ -43,6 +43,7 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
                         const src = storage.getFileDownload(BUCKET_ID, element.songid);
 
                         if (currSongBox) {
+                            console.log(45);
                             audioElement.remove();
                             handleReset()
                             audioElement = document.createElement("audio")
@@ -56,7 +57,7 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
                         } else {
                             console.log(src.href);
                             audioElement.src = src.href
-                            handlePlayPause();
+                            await handlePlayPause();
                             handleProgressBar(audioElement);
                         }
                         currSongBox = songBox;
@@ -141,7 +142,7 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
     }
 
 
-    function handlePlayPause() {
+    async function handlePlayPause() {
         if (isPlay) {
             playAndPause.innerText = "play_arrow"
             audioElement.pause()
@@ -151,20 +152,20 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
                 handleProgressBar(audioElement);
             }
             playAndPause.innerText = "pause"
-            audioElement.play()
+            await audioElement.play()
         }
 
         isPlay = !isPlay;
     }
 
     playAndPause.addEventListener("click", handlePlayPause)
-    audioElement.addEventListener("ended", () => {
-        handlePlayPause();
+    audioElement.addEventListener("ended", async () => {
+        await handlePlayPause();
         console.log(songArr);
         index = index + 1;
         audioElement.src = storage.getFileDownload(BUCKET_ID, songArr.documents[index].songid)
         handleReset()
-        handlePlayPause();
+        await handlePlayPause();
 
     })
 
@@ -175,8 +176,9 @@ import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
 
     function handleReset() {
         // console.log(tduration);
-        // alert(45)
-        myBar.style.width = '0%'
+        console.log("handle reset done")
+        myBar.style.width = '0'
+        console.log(myBar);
         calculationCount = 1;
     }
 })();
