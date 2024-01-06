@@ -1,191 +1,178 @@
-import { Query, databases, storage } from "../../appwrite/config";
-import { BUCKET_ID, DATABASE_ID, SONG_COLLECTION_ID } from "../../utils/sceret";
+const activeGenre = document.querySelector("#curr-genre")
+const genreSongCont = document.querySelector("#genre-song-cont")
+let audioElement = document.querySelector("audio")
+let playAndPause = document.querySelector("#play")
+const progressBar = document.querySelector(".progressBar")
+const section = document.querySelector("section")
+let totalDuration = document.querySelector("#t-duration")
+let cTime = document.querySelector("#c-time")
+const myBar = document.querySelector(".myBar")
 
-(() => {
-    // console.log(window.location.href);//this will give entire URL
-    // console.log(window.location.href.split("?")[1]); // this will give the QUERY
-    // console.log(window.location.href.split("?")[1].split("=")[1]); // this will give the GENRE_NAME
-    const activeGenre = document.querySelector("#curr-genre")
-    const genreSongCont = document.querySelector("#genre-song-cont")
-    let audioElement = document.querySelector("audio")
-    let playAndPause = document.querySelector("#play")
-    const progressBar = document.querySelector(".progressBar")
-    const section = document.querySelector("section")
-    let totalDuration = document.querySelector("#t-duration")
+let calculationCount = 1;
+let intervalInSeconds = 3;
+let checkWhenSongPlayHappen = "first";
+let isPlay = false;
+let prevSong = null;
+let currTrack = null;
+let index = 0;
+let isLeftDown = false;
 
-    const GENRE_NAME = window.location.href.split("?")[1].split("=")[1]
-    activeGenre.innerHTML = GENRE_NAME;
-    let isPlay = false;
-    let songArr = null
-    let index = 0;
-    let currSongBox = null;
-    const fetchSongByGenreName = async () => {
-        try {
-            songArr = await databases.listDocuments(DATABASE_ID, SONG_COLLECTION_ID,
-                [
-                    Query.limit(10),
-                    Query.equal("genre", [GENRE_NAME])
-                ])
+const songArr = [
+    {
+        _id: 1,
+        songName: "RamSiyaRam",
+        src: "../../public/RamSiyaRam.webm",
+        artist: "Latish"
+    },
+    {
+        _id: 2,
+        songName: "maan meri jaan",
+        src: "../../public/maanmerijaan.mp3",
+        artist: "Latish"
+    },
+    {
+        _id: 3,
+        songName: "sanam re",
+        src: "../../public/sanamre.webm",
+        artist: "sachin"
+    },
+    {
+        _id: 4,
+        songName: "phiraurkya",
+        src: "../../public/phiraurkya.webm",
+        artist: "sachin"
 
-            songArr.documents.forEach((element) => {
-                const songBox = document.createElement("div");
-                // const src = 
-                songBox.classList.add("genre-song-box")
-                const result = storage.getFileDownload(BUCKET_ID, element.thumbnailid);
-                songBox.style.backgroundImage = `url(${result.href})`
-                const html = `<div class="song-title">${element.title}</div>
-                <div class="song-artist">${element.artist}</div>`
-                songBox.innerHTML = html
-                genreSongCont.appendChild(songBox)
+    },
+    {
+        _id: 5,
+        songName: "Majha raja tu sona",
+        src: "../../public/Majharajatusona.webm",
+        artist: "Sandeep"
 
-                songBox.addEventListener("click", async function() {
-                    try {
-                        const src = storage.getFileDownload(BUCKET_ID, element.songid);
+    },
 
-                        if (currSongBox === this) {
-                            await handlePlayPause();
-                            return;
-                        }
+]
 
-                        if (currSongBox) {
-                            audioElement.remove();
-                            audioElement = document.createElement("audio")
-                            audioElement.setAttribute("controls", true)
-                            audioElement.src = src.href
-                            await audioElement.play();
-                            setTotalDuration(audioElement.duration)
-                            handleProgressBar(audioElement, true);
-                            section.appendChild(audioElement)
-                        } else {
-                            audioElement.src = src.href
-                            await handlePlayPause();
-                            handleProgressBar(audioElement);
-                        }
+const fetchSongByGenreName = () => {
+    songArr.forEach((element, idx) => {
+        const songBox = document.createElement("div");
+        songBox.classList.add("genre-song-box")
+        const html = `<div class="song-title">${element.songName}</div>
+            <div class="song-artist">${element.artist}</div>`
+        songBox.innerHTML = html
+        genreSongCont.appendChild(songBox)
 
-                        currSongBox = songBox;
-                    } catch (error) {
-                        console.log(error);
-                    }
-                })
-            })
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    fetchSongByGenreName();
-
-    const myBar = document.querySelector(".myBar")
-    var calculationCount = 1;
-    var intervalInSeconds = 3;
-    let tduration = null;
-
-    function handleProgressBar(audioElement, isReset = false) {
-        if (isReset) {
-            myBar.style.width = '0'
-            calculationCount = 1;
-        }
-        let cTime = document.querySelector("#c-time")
-        audioElement.addEventListener('timeupdate', async function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-
-            if (tduration === null) {
-                console.log("timeupdate tduration");
-                setTotalDuration(audioElement.duration)
+        songBox.addEventListener("click", async function () {
+            if (currTrack !== this && index !== idx) {
+                resetIsPlay();
             }
+            handlePlayAndPause(currTrack === this || index === idx ? -1 : idx);
+            index = idx;
+            currTrack = songBox;
+        })
 
-            let currTime = await audioElement.currentTime
-            cTime.innerText = formatAudioDuration(currTime);
-            const currentSeconds = await audioElement.currentTime;
-            if (currentSeconds > (calculationCount * intervalInSeconds)) {
-                let percent = (Math.floor(currentSeconds) / Math.ceil(tduration))
-                myBar.style.width = (percent * 100) + "%";
-                calculationCount++;
-            }
-        });
+    })
+}
+
+fetchSongByGenreName();
+
+async function handlePlayAndPause(index, isEnded = null) {
+    if (isPlay && isEnded === null) {
+        playAndPause.innerHTML = "play_arrow"
+        audioElement.pause();
+    } else {
+        if (index >= 0 && prevSong !== index) {
+            audioElement.src = songArr[index].src
+        }
+
+        await audioElement.play()
+        if (prevSong !== index && index !== -1) {
+            handleResetMyBar();
+            totalDuration.innerText = formatAudioDuration(audioElement.duration)
+            prevSong = index;
+        }
+        playAndPause.innerText = "pause"
     }
 
+    isPlay = !isPlay;
+}
 
-    function formatAudioDuration(durationInSeconds) {
-        const minutes = Math.floor(durationInSeconds / 60);
-        const seconds = Math.floor(durationInSeconds % 60);
-        const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-        return `${minutes}:${formattedSeconds}`;
+playAndPause.addEventListener("click", async () => {
+    if (checkWhenSongPlayHappen === "first") {
+        handlePlayAndPause(index);
+        checkWhenSongPlayHappen = "clicked"
+        return;
+    }
+    handlePlayAndPause(-1)
+})
+
+function resetIsPlay() {
+    isPlay = false;
+}
+
+function formatAudioDuration(durationInSeconds) {
+    const minutes = Math.floor(durationInSeconds / 60);
+    const seconds = Math.floor(durationInSeconds % 60);
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+    return `${minutes}:${formattedSeconds}`;
+}
+
+audioElement.addEventListener('timeupdate', async function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    let currTime = audioElement.currentTime
+    cTime.innerText = formatAudioDuration(currTime);
+    const currentSeconds = audioElement.currentTime;
+    if (currentSeconds > (calculationCount * intervalInSeconds)) {
+        let percent = (Math.floor(currentSeconds) / Math.ceil(audioElement.duration))
+        myBar.style.width = (percent * 100) + "%";
+        calculationCount++;
+    }
+});
+
+audioElement.addEventListener("ended", async () => {
+    index = index + 1;
+    if (index === songArr.length - 1) {
+        index = 0;
     }
 
-    progressBar.addEventListener("click", (event) => {
+    // Special case because my song is ended here now i want to load another track
+    resetIsPlay();
+    handlePlayAndPause(index, true)
+})
+
+function handleResetMyBar() {
+    myBar.style.width = '0';
+    calculationCount = 1;
+}
+
+progressBar.addEventListener("click", (event) => {
+    seek(event,true)
+})
+
+progressBar.addEventListener("mousedown", (e) => {
+    if (e.buttons === 1) {
+        isLeftDown = true;
+        audioElement.pause()
+    }
+})
+
+progressBar.addEventListener("mousemove", (event) => {
+    if (isLeftDown) {
         seek(event)
-    })
-
-    let isLeftDown = false;
-
-    progressBar.addEventListener("mousedown", (e) => {
-        if (e.buttons === 1) {
-            isLeftDown = true;
-            audioElement.pause()
-        }
-    })
-
-    progressBar.addEventListener("mousemove", (event) => {
-        if (isLeftDown) {
-            seek(event)
-        }
-    })
-
-    progressBar.addEventListener("mouseup", (event) => {
-        isLeftDown = false;
-        seek(event, true)
-    })
-
-    function seek(event, isMouseUp = false) {
-        var percent = (event.offsetX / progressBar.offsetWidth);
-        myBar.style.width = `${percent * 100}%`
-        if (audioElement && isMouseUp) {
-            audioElement.currentTime = percent * audioElement.duration
-            audioElement.play()
-        }
     }
+})
 
-
-    async function handlePlayPause() {
-        if (isPlay) {
-            playAndPause.innerText = "play_arrow"
-            audioElement.pause()
-        } else {
-            if (songArr && audioElement.src === window.location.href) {
-                audioElement.src = storage.getFileDownload(BUCKET_ID, songArr.documents[0].songid)
-                handleProgressBar(audioElement);
-            }
-            playAndPause.innerText = "pause"
-            await audioElement.play()
-        }
-
-        isPlay = !isPlay;
+progressBar.addEventListener("mouseup", (event) => {
+    isLeftDown = false;
+    seek(event, true)
+})
+async function seek(event, isMouseUp = false) {
+    var percent = (event.offsetX / progressBar.offsetWidth);
+    myBar.style.width = `${percent * 100}%`
+    if (audioElement && isMouseUp) {
+        audioElement.currentTime = percent * audioElement.duration
+        await audioElement.play();
     }
-
-    playAndPause.addEventListener("click", handlePlayPause)
-    audioElement.addEventListener("ended", async () => {
-        await handlePlayPause();
-        console.log(songArr);
-        index = index + 1;
-        audioElement.src = storage.getFileDownload(BUCKET_ID, songArr.documents[index].songid)
-        handleReset()
-        await handlePlayPause();
-
-    })
-
-    function setTotalDuration(totalDurationTime) {
-        tduration = totalDurationTime;
-        totalDuration.innerText = formatAudioDuration(totalDurationTime);
-    }
-
-    function handleReset() {
-        // console.log(tduration);
-        console.log("handle reset done")
-        myBar.style.width = '0'
-        console.log(myBar);
-        calculationCount = 1;
-    }
-})();
+}
