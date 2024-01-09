@@ -66,7 +66,9 @@ const fetchSongByGenreName = () => {
             if (currTrack !== this && index !== idx) {
                 resetIsPlay();
             }
+
             handlePlayAndPause(currTrack === this || index === idx ? -1 : idx);
+
             index = idx;
             currTrack = songBox;
         })
@@ -81,6 +83,7 @@ async function handlePlayAndPause(index, isEnded = null) {
         playAndPause.innerHTML = "play_arrow"
         audioElement.pause();
     } else {
+        
         if (index >= 0 && prevSong !== index) {
             audioElement.src = songArr[index].src
         }
